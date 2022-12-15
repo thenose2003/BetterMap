@@ -35,6 +35,12 @@ class MapRenderer {
             }
         }
 
+        // RGB section
+        if (renderContext.settings.rgb) {
+            let backgroundColor = Renderer.color(Renderer.getRainbowColors(World.getTime(), renderContext.settings.rgbSpeed)[0], Renderer.getRainbowColors(World.getTime(), renderContext.settings.rgbSpeed)[1], Renderer.getRainbowColors(World.getTime(), renderContext.settings.rgbSpeed)[2], 50)
+            Renderer.drawRect(backgroundColor, 0, 0, 1920, 10180) // Background
+        }
+        
         // BACKROUND COLOR
         Renderer.drawRect(Renderer.color(renderContext.settings.mapBackgroundColor[0] ?? 0, renderContext.settings.mapBackgroundColor[1] ?? 0, renderContext.settings.mapBackgroundColor[2] ?? 0, renderContext.settings.mapBackgroundColor[3] ?? 150), x, y, size, size)// Background
 

@@ -104,11 +104,11 @@ class RenderContext {
     get tickStyle() {
         return this.settings.tickStyle
     }
-    
+
     get centerCheckmarks() {
         return this.settings.centerCheckmarks
     }
-    
+
     get tickStyle_secrets_overHead() {
         return this.settings.tickStyle_secrets_overHead
     }
@@ -475,7 +475,9 @@ class RenderContext {
         customRoomColorWitherDoor = [0, 0, 0, 255],
         customRoomGapSize = 9,
         customDoorSize = 15,
-        spinnyMap = false
+        spinnyMap = false,
+        rgb = false,
+        rgbSpeed = 5
     }) {
         return {
             showMap,
@@ -538,7 +540,9 @@ class RenderContext {
             customRoomColorWitherDoor,
             customRoomGapSize,
             customDoorSize,
-            spinnyMap
+            spinnyMap,
+            rgb,
+            rgbSpeed
         }
     }
 

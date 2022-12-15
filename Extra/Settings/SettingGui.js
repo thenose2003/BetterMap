@@ -161,6 +161,8 @@ class SettingGui {
         })), 0.5, 0.4, 0.075)
         this.addSidebarElement()
 
+        this.addToggle("Active RGB MODE", "rgb", this.currentSettings.rgb)
+        this.addSlider("RGB speed", "rgbSpeed", this.currentSettings.rgbSpeed ?? 3, 0, 10) 
 
         this.addSidebarElement(new ButtonWithArrow().setText("&0Discord").addEvent(new SoopyMouseClickEvent().setHandler(() => {
             java.awt.Desktop.getDesktop().browse(
