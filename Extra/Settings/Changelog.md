@@ -117,6 +117,36 @@ First released version!
 
 @ver v1.0.12
 ```diff
+! Fixed 300 score message never sending
+! Fixed incompatible dg cosmetics breaking stuff
+! Fixed last years april fools for next year
+```
+
+@ver v1.0.13
+```diff
+! Internal fix
+```
+
+@ver v1.0.14
+```diff
+! Fixed new sb level icons breaking player heads 
+```
+
+@ver v1.0.15
+```diff
+! Fixed score calc breaking from changed tab list
+```
+
+@ver v1.0.16
+```diff
+! Migrated secret count api
+! Fixed death counts for own player not working
+```
+
+@ver v1.0.17
+```diff
+! Fixed player heads being wonky when the player is nicked
+=======
 + add settings profile selection (thenose2003)
 + add importing and exporting settings profiles (thenose2003)
 + add spinny map for all the nons (thenose2003)
