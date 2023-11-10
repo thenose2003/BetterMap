@@ -63,7 +63,9 @@ class SettingsObj {
             customRoomColorWitherDoor: [0, 0, 0, 255],
             customRoomGapSize: 9,
             customDoorSize: 15,
-            spinnyMap: false
+            spinnyMap: false,
+            centerSpin: true,
+            dungScale: 100
         }
 
         if (typeof settingsFile.activeProfile === 'undefined') {

@@ -179,7 +179,7 @@ class MapPlayer {
         return dungeon.rooms.get(x + ',' + y)
     }
 
-    drawAt(context, x, y, w, h, showIcons = false, rotation = 0, borderWidth = 2) {
+    drawAt(context, x, y, w, h, showIcons = false, rotation = 0, borderWidth = 2, notBoss = true) {
         Tessellator.pushMatrix()
         Renderer.retainTransforms(true)
 
@@ -188,17 +188,20 @@ class MapPlayer {
         }
 
         // Player head rotations
-        if (context.spinnyMap == false) {
+        /*if (context.spinnyMap == false) {
         } else if (context.spinnyMap) {
             Renderer.translate((context.posX + context.paddingLeft + context.borderWidth + context.size / 2), (context.posY + context.paddingLeft + context.borderWidth + context.size / 2));
             Renderer.rotate(-(Player.getYaw() + 180))
             Renderer.translate(-(context.posX + context.paddingLeft + context.borderWidth + context.size / 2), -(context.posY + context.paddingLeft + context.borderWidth + context.size / 2));
-        } 
-
+        }*/
         Renderer.translate(x + w / 2, y + h / 2, 50)
-
-
-        Renderer.rotate(rotation)
+        //ChatLib.chat(`${notBoss}`)
+        if (context.spinnyMap && notBoss) {
+            Renderer.rotate(rotation - (Player.getYaw() + 180))
+        }
+        else {
+            Renderer.rotate(rotation)
+        }
 
         if (showIcons) {
             Renderer.drawImage(this.username === Player.getName() ? markerSelf : markerOther, -w / 2, -h / 2, w, h)
@@ -239,14 +242,64 @@ class MapPlayer {
 
         if (!dungeon) return
 
+        // Array pos in map
         let arrayX = (this.location.worldX + 200) / 32 - 0.5
         let arrayY = (this.location.worldY + 200) / 32 - 0.5
 
-        let x2 = (renderContext.roomGap / 2 + renderContext.blockSize * arrayX + renderContext.roomSize / 2 + renderContext.paddingLeft) / renderContext.getImageSize(dungeon.floor)
-        let y2 = (renderContext.roomGap / 2 + renderContext.blockSize * arrayY + renderContext.roomSize / 2 + renderContext.paddingTop) / renderContext.getImageSize(dungeon.floor)
+        // Normalize to be out of 1
+        let x3 = (renderContext.roomGap / 2 + renderContext.blockSize * arrayX + renderContext.roomSize / 2 + renderContext.paddingLeft) / renderContext.getImageSize(dungeon.floor)
+        let y3 = (renderContext.roomGap / 2 + renderContext.blockSize * arrayY + renderContext.roomSize / 2 + renderContext.paddingTop) / renderContext.getImageSize(dungeon.floor)
 
-        x2 = x + x2 * renderContext.size + renderContext.borderWidth
-        y2 = y + y2 * renderContext.size + renderContext.borderWidth
+        // Multiply by size and offset by  pos
+        x2 = x + x3 * renderContext.size + renderContext.borderWidth
+        y2 = y + y3 * renderContext.size + renderContext.borderWidth
+        // False if in boss
+        if (renderContext.spinnyMap && dungeon) {
+            // Generate cords relitive to center of map
+            // if center spinny map
+            let x1
+            let y1
+            if (renderContext.settings.centerSpin) {
+                // array values of position
+                x1 = arrayX - ((Player.getX() + 200) / 32 - 0.5)
+                y1 = arrayY - ((Player.getZ() + 200) / 32 - 0.5)
+                //ChatLib.chat(`${x1}`)
+
+                // Normalize to be out of 1
+                x1 = (renderContext.blockSize * x1) / renderContext.getImageSize(dungeon.floor)
+                y1 = (renderContext.blockSize * y1) / renderContext.getImageSize(dungeon.floor)
+
+                // Multiply by size 
+                x1 = x1 * renderContext.size * renderContext.settings.dungScale/100
+                y1 = y1 * renderContext.size * renderContext.settings.dungScale/100
+
+                //ChatLib.chat(`${x3} ${(Player.getX() + 200) / 32 - 0.5}`)
+            } else {
+                x1 = x2 - (renderContext.posX - renderContext.paddingLeft + renderContext.borderWidth + renderContext.size / 2)
+                y1 = y2 - (renderContext.posY + renderContext.paddingLeft + renderContext.borderWidth + renderContext.size / 2)
+            }
+
+            // Get the angle thing is currently at and the offset
+            let phi = -(Player.getYaw()) * (Math.PI / 180);
+            let theta;
+            if (x1 > 0) {
+                theta = Math.atan(y1 / x1) + Math.PI || Math.PI;
+            } else {
+                theta = Math.atan(y1 / x1) || Math.PI;
+            }
+            //ChatLib.chat(`${theta} ${phi}`)
+            let factorX = Math.cos(theta + phi)
+            let factorY = Math.sin(theta + phi)
+            let r = Math.sqrt(Math.pow(x1, 2) + Math.pow(y1, 2))
+
+            // take dist from mid //  add mid
+            //ChatLib.chat(`${r} ${factorX}`)
+            x2 = r * factorX + (renderContext.posX + renderContext.paddingLeft + renderContext.borderWidth + renderContext.size / 2)
+            y2 = r * factorY + (renderContext.posY + renderContext.paddingLeft + renderContext.borderWidth + renderContext.size / 2)
+
+
+
+        }
 
         return [x2, y2]
     }
@@ -254,7 +307,7 @@ class MapPlayer {
     /**
      * @param {RenderContext} renderContext 
      */
-    drawIcon(renderContext, dungeon, overrideX, overrideY) {
+    drawIcon(renderContext, dungeon, overrideX, overrideY, notBoss = true) {
         if (renderContext.showHeads === 'off') return;
         let { size, headScale } = renderContext.getMapDimensions()
 
@@ -266,11 +319,13 @@ class MapPlayer {
         let rh = headScale * size / 100
 
         let [x2, y2] = this.getRenderLocation(renderContext, dungeon)
+        //ChatLib.chat(`${x2 - overrideX} ${y2 - overrideY}`)
         x2 = overrideX || x2
         y2 = overrideY || y2
 
         renderContext.spinnyMap = renderContext.settings.spinnyMap
-        this.drawAt(renderContext, x2 + rx, y2 + ry, rw, rh, renderContext.showHeads === "icons" || renderContext.showHeads === 'self-icon' && this.username === Player.getName(), this.yaw.get(), renderContext.headBorder !== 'none' ? renderContext.headBorderWidth : 0)
+        renderContext.dungScale = renderContext.settings.dungScale
+        this.drawAt(renderContext, x2 + rx, y2 + ry, rw, rh, renderContext.showHeads === "icons" || renderContext.showHeads === 'self-icon' && this.username === Player.getName(), this.yaw.get(), renderContext.headBorder !== 'none' ? renderContext.headBorderWidth : 0, notBoss)
 
         let showNametag = renderContext.playerNames === "always"
 
@@ -286,38 +341,15 @@ class MapPlayer {
             Renderer.retainTransforms(true)
             Tessellator.pushMatrix()
 
-            //Renderer.translate(x2, y2, 101)
-            //Renderer.scale(size / 150, size / 150)
+            Renderer.translate(x2, y2, 101)
+            Renderer.scale(size / 150, size / 150)
 
-            let x = x2
-            let y = y2
 
-            if (renderContext.settings.spinnyMap) {
-                // Generate cords relitive to center of map
-                let x1 = x2 - (renderContext.settings.posX - renderContext.paddingLeft + renderContext.borderWidth + renderContext.settings.size / 2)
-                let y1 = y2 - (renderContext.settings.posY + renderContext.paddingLeft + renderContext.borderWidth + renderContext.settings.size / 2)
-
-                // Get the angle thing is currently at and the offset
-                let phi = -(Player.getYaw()) * (Math.PI / 180);
-                let theta;
-                if (x1 > 0) {
-                    theta = Math.atan(y1 / x1) + Math.PI;
-                } else {
-                    theta = Math.atan(y1 / x1);
-                }
-                let factorX = Math.cos(theta + phi)
-                let factorY = Math.sin(theta + phi)
-                let r = Math.sqrt(Math.pow(x1, 2) + Math.pow(y1, 2))
-                // Movement back into pos
-                x = r * factorX + (renderContext.settings.posX + renderContext.paddingLeft + renderContext.borderWidth + renderContext.settings.size / 2)
-                y = r * factorY + (renderContext.settings.posY + renderContext.paddingLeft + renderContext.borderWidth + renderContext.settings.size / 2)
-            }
-
-            renderLibs.drawStringCentered("&0" + this.username, x + 1, y + rh / (2 * size / 150), 1)
-            renderLibs.drawStringCentered("&0" + this.username, x - 1, y + rh / (2 * size / 150), 1)
-            renderLibs.drawStringCentered("&0" + this.username, x, y + rh / (2 * size / 150) + 1, 1)
-            renderLibs.drawStringCentered("&0" + this.username, x, y + rh / (2 * size / 150) - 1, 1)
-            renderLibs.drawStringCentered(this.username, x, y + rh / (2 * size / 150), 1)
+            renderLibs.drawStringCentered("&0" + this.username, 1, rh / (2 * size / 150), 1)
+            renderLibs.drawStringCentered("&0" + this.username, 1, rh / (2 * size / 150), 1)
+            renderLibs.drawStringCentered("&0" + this.username, 0, rh / (2 * size / 150) + 1, 1)
+            renderLibs.drawStringCentered("&0" + this.username, 0, rh / (2 * size / 150) - 1, 1)
+            renderLibs.drawStringCentered(this.username, 0, rh / (2 * size / 150), 1)
 
             Tessellator.popMatrix()
             Renderer.retainTransforms(false)

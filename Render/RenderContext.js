@@ -46,6 +46,9 @@
  * @property {[r:Number, g:Number, b:Number, a:number]} tankColor - Border color for tank class
  * @property {[r:Number, g:Number, b:Number, a:number]} singleBorderColor - Border color for everyone
  * @property {[r:Number, g:Number, b:Number, a:number]} singleBorderColorSelf - Border color for self
+ * @property {Boolean} spinnyMap - Enable/disable Spinny map
+ * @property {Boolean} centerSpin - Enable/disable player at center of spinny map
+ * @property {Number} dungScale - How much to scale map in dungeon
  */
 
 const BufferedImage = Java.type("java.awt.image.BufferedImage")
@@ -469,7 +472,9 @@ class RenderContext {
         customRoomColorWitherDoor = [0, 0, 0, 255],
         customRoomGapSize = 9,
         customDoorSize = 15,
-        spinnyMap = false
+        spinnyMap = false,
+        centerSpin = true,
+        dungScale = 1
     }) {
         return {
             showMap,
@@ -531,7 +536,9 @@ class RenderContext {
             customRoomColorWitherDoor,
             customRoomGapSize,
             customDoorSize,
-            spinnyMap
+            spinnyMap,
+            centerSpin,
+            dungScale
         }
     }
 

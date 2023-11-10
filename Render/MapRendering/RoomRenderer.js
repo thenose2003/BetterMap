@@ -165,8 +165,29 @@ class RoomRenderer {
 
         if (context.settings.spinnyMap) {
             // Generate cords relitive to center of map
+            if (context.settings.centerSpin) {
+
+                let x3 = (Player.getX() + 200) / 32 - 3
+                let y3 = (Player.getZ() + 200) / 32 - 3
+                //ChatLib.chat(`${x1}`)
+
+                // Normalize to be out of 1
+                x3 = (context.blockSize * x3) / context.getImageSize(dungeon.floor)
+                y3 = (context.blockSize * y3) / context.getImageSize(dungeon.floor)
+
+                // Multiply by size 
+                x3 = x3 * context.size
+                y3 = y3 * context.size
+
+                x += -x3
+                y += -y3
+
+            }
             let x1 = x - (context.settings.posX - context.paddingLeft + context.borderWidth + context.settings.size / 2)
             let y1 = y - (context.settings.posY + context.paddingLeft + context.borderWidth + context.settings.size / 2)
+
+            x1 = context.settings.dungScale / 100 * x1
+            y1 = context.settings.dungScale / 100 * y1
 
             // Get the angle thing is currently at and the offset
             let phi = -(Player.getYaw()) * (Math.PI / 180);
@@ -210,19 +231,19 @@ class RoomRenderer {
                 if (context.tickStyle_secrets_overHead) Renderer.translate(0, 0, 100)
                 renderLibs.drawStringCenteredShadow("&0" + line, x + scale, ly, scale)
 
-                
+
                 if (context.tickStyle_secrets_overHead) Renderer.translate(0, 0, 100)
                 renderLibs.drawStringCenteredShadow("&0" + line, x - scale, ly, scale)
 
-                
+
                 if (context.tickStyle_secrets_overHead) Renderer.translate(0, 0, 100)
                 renderLibs.drawStringCenteredShadow("&0" + line, x, ly + scale, scale)
 
-                
+
                 if (context.tickStyle_secrets_overHead) Renderer.translate(0, 0, 100)
                 renderLibs.drawStringCenteredShadow("&0" + line, x, ly - textScale, textScale)
 
-                
+
                 if (context.tickStyle_secrets_overHead) Renderer.translate(0, 0, 100)
                 renderLibs.drawStringCenteredShadow(textColor + line, x, ly, textScale)
 
@@ -261,9 +282,31 @@ class RoomRenderer {
             y = context.posY + y * (context.size - context.borderWidth) + context.borderWidth
 
             if (context.settings.spinnyMap) {
+                if (context.settings.centerSpin) {
+
+                    let x3 = (Player.getX() + 200) / 32 - 3
+                    let y3 = (Player.getZ() + 200) / 32 - 3
+                    //ChatLib.chat(`${x1}`)
+
+                    // Normalize to be out of 1
+                    x3 = (context.blockSize * x3) / context.getImageSize(dungeon.floor)
+                    y3 = (context.blockSize * y3) / context.getImageSize(dungeon.floor)
+
+                    // Multiply by size 
+                    x3 = x3 * context.size
+                    y3 = y3 * context.size
+
+                    x += -x3
+                    y += -y3
+
+                }
+
                 // Generate cords relitive to center of map
                 let x1 = x - (context.settings.posX - context.paddingLeft + context.borderWidth + context.settings.size / 2)
                 let y1 = y - (context.settings.posY + context.paddingLeft + context.borderWidth + context.settings.size / 2)
+
+                x1 = context.settings.dungScale / 100 * x1
+                y1 = context.settings.dungScale / 100 * y1
 
                 // Get the angle thing is currently at and the offset
                 let phi = -(Player.getYaw()) * (Math.PI / 180);
@@ -325,7 +368,7 @@ class RoomRenderer {
                 renderLibs.drawStringCenteredShadow(text, x, y - textScale - 4.5 * textScale, textScale)
             }
 
-            
+
             if (context.tickStyle_secrets_overHead) Renderer.translate(0, 0, 100)
             renderLibs.drawStringCenteredShadow(textColored, x, y - 4.5 * textScale, textScale)
         }
@@ -347,9 +390,31 @@ class RoomRenderer {
             y = context.posY + y * (context.size - context.borderWidth) + context.borderWidth
 
             if (context.settings.spinnyMap) {
+
+                if (context.settings.centerSpin) {
+
+                    let x3 = (Player.getX() + 200) / 32 - 3
+                    let y3 = (Player.getZ() + 200) / 32 - 3
+                    //ChatLib.chat(`${x1}`)
+
+                    // Normalize to be out of 1
+                    x3 = (context.blockSize * x3) / context.getImageSize(dungeon.floor)
+                    y3 = (context.blockSize * y3) / context.getImageSize(dungeon.floor)
+
+                    // Multiply by size 
+                    x3 = x3 * context.size
+                    y3 = y3 * context.size
+
+                    x += -x3
+                    y += -y3
+
+                }
                 // Generate cords relitive to center of map
                 let x1 = x - (context.settings.posX - context.paddingLeft + context.borderWidth + context.settings.size / 2)
                 let y1 = y - (context.settings.posY + context.paddingLeft + context.borderWidth + context.settings.size / 2)
+
+                x1 = context.settings.dungScale/100 * x1
+                y1 = context.settings.dungScale/100 * y1
 
                 // Get the angle thing is currently at and the offset
                 let phi = -(Player.getYaw()) * (Math.PI / 180);
@@ -365,6 +430,8 @@ class RoomRenderer {
                 // Movement back into pos
                 x = r * factorX + (context.settings.posX + context.paddingLeft + context.borderWidth + context.settings.size / 2)
                 y = r * factorY + (context.settings.posY + context.paddingLeft + context.borderWidth + context.settings.size / 2)
+
+
             }
 
             let scale = context.size / 250 * context.textScale / 8

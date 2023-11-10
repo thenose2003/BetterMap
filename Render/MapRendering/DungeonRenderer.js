@@ -57,16 +57,46 @@ class DungeonRenderer extends MapTab {
         if (renderContext.image) {
             let { x, y, size } = renderContext.getMapDimensions()
 
+            renderLibs.scizzor(x + renderContext.borderWidth, y + renderContext.borderWidth, size - 2 * renderContext.borderWidth, size - renderContext.borderWidth)
+
             // Map image rotation
+
             if (renderContext.settings.spinnyMap) {
+                if (renderContext.settings.centerSpin) {
+
+                    let x1 = (Player.getX() + 200) / 32 - 3
+                    let y1 = (Player.getZ() + 200) / 32 - 3
+                    //ChatLib.chat(`${x1}`)
+
+                    // Normalize to be out of 1
+                    x1 = (renderContext.blockSize * x1) / renderContext.getImageSize(dungeonMap.floor)
+                    y1 = (renderContext.blockSize * y1) / renderContext.getImageSize(dungeonMap.floor)
+
+                    // Multiply by size 
+                    x1 = x1 * renderContext.size
+                    y1 = y1 * renderContext.size
+
+                    x += -x1
+                    y += -y1
+
+                }
                 Renderer.translate((renderContext.settings.posX + renderContext.paddingLeft + renderContext.borderWidth + renderContext.settings.size / 2), (renderContext.settings.posY + renderContext.paddingLeft + renderContext.borderWidth + renderContext.settings.size / 2));
+                Renderer.scale(renderContext.settings.dungScale / 100, renderContext.settings.dungScale / 100)
                 Renderer.rotate(-(Player.getYaw() + 180))
                 Renderer.translate(-(renderContext.settings.posX + renderContext.paddingLeft + renderContext.borderWidth + renderContext.settings.size / 2), -(renderContext.settings.posY + renderContext.paddingLeft + renderContext.borderWidth + renderContext.settings.size / 2));
-                //Renderer.scale(2, 2)
+                //Renderer.scale(renderContext.settings.dungScale/100, renderContext.settings.dungScale/100)
+
+
+                //renderContext.image.draw(x + renderContext.borderWidth, y + renderContext.borderWidth, size, size - renderContext.borderWidth)
+            } else {
+                Renderer.translate((renderContext.settings.posX + renderContext.paddingLeft + renderContext.borderWidth + renderContext.settings.size / 2), (renderContext.settings.posY + renderContext.paddingLeft + renderContext.borderWidth + renderContext.settings.size / 2));
+                Renderer.scale(renderContext.settings.dungScale / 100, renderContext.settings.dungScale / 100)
+                Renderer.translate(-(renderContext.settings.posX + renderContext.paddingLeft + renderContext.borderWidth + renderContext.settings.size / 2), -(renderContext.settings.posY + renderContext.paddingLeft + renderContext.borderWidth + renderContext.settings.size / 2));
+                
             }
             // Move sizzor to now inclue all the map
-            renderLibs.scizzor(x + renderContext.borderWidth, y + renderContext.borderWidth, size - 2 * renderContext.borderWidth, size - renderContext.borderWidth)
-            
+            //Renderer.scale(renderContext.settings.dungScale/100, renderContext.settings.dungScale/100)
+
             renderContext.image.draw(x + renderContext.borderWidth, y + renderContext.borderWidth, size, size - renderContext.borderWidth)
 
             for (let room of dungeonMap.roomsArr) {
@@ -79,7 +109,16 @@ class DungeonRenderer extends MapTab {
             //renderLibs.scizzor(x + renderContext.borderWidth, y + renderContext.borderWidth, size - 2 * renderContext.borderWidth, size - renderContext.borderWidth)
             for (let player of dungeonMap.players) {
                 if (dungeonMap.deadPlayers.has(player.username.toLowerCase())) continue
-                player.drawIcon(renderContext, dungeonMap)
+
+                if (renderContext.settings.spinnyMap) {
+                    let { x, y, size } = renderContext.getMapDimensions()
+                    let [x2, y2] = player.getRenderLocation(renderContext, dungeonMap)
+                    renderX = x2
+                    renderY = y2
+                    player.drawIcon(renderContext, dungeonMap)
+                } else {
+                    player.drawIcon(renderContext, dungeonMap)
+                }
             }
             renderLibs.stopScizzor()
         }

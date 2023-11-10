@@ -399,8 +399,6 @@ class SettingGui {
 
         this.addToggle("Spirit leap overlay", "spiritLeapOverlay", this.currentSettings.spiritLeapOverlay)[1].setLore(["You can click on player heads in overlay!", "Most people probs wont like the design though."])
 
-        this.addToggle("Spinny map", "spinnyMap", this.currentSettings.spinnyMap)[1].setLore(["dont turn this on its cursed"])
-
         this.addSidebarElement(new ButtonWithArrow().setText("&0Load api key from other mods").addEvent(new SoopyMouseClickEvent().setHandler(() => {
             findKey(key => {
                 this.setApiKey(key)
@@ -411,6 +409,16 @@ class SettingGui {
         this.apiKeySetting = this.addHiddenString("Api key", "apiKey", this.currentSettings.apiKey)[0]
 
         this.addToggle("Show dev info", "devInfo", this.currentSettings.devInfo)
+
+        this.addCategory("Dont use this")
+        this.addToggle("Spinny Map", "spinnyMap", this.currentSettings.spinnyMap)[1].setLore(["dont turn this on its cursed"])
+
+        this.addGear(() => {
+            return this.currentSettings.spinnyMap
+        }, (elm) => {
+            elm.addToggle("Center Spin", "centerSpin", this.currentSettings.centerSpin)[1].setLore(["idk maybe this will help"])
+        })
+        this.addSlider("Dungeon Map Scale", "dungScale", this.currentSettings.dungScale ?? 1, 1, 200)
 
         // END OF SETTINGS
 
@@ -630,6 +638,10 @@ class SettingGui {
             this.changed(setting, val)
         })), 0.55, 0.35, 0.075)
 
+        this.onSettingChangeFunctions.push(() => {
+            drop.setOptions(options).setSelectedOption(this.currentSettings[setting] ?? defau)
+        })
+
         return [drop, addFun(new SoopyTextElement().setText("§0" + label).setMaxTextScale(2), 0.1, 0.35)]
     }
 
@@ -644,6 +656,10 @@ class SettingGui {
         let toggle = addFun(new Toggle().setValue(this.currentSettings[setting] ?? defau).addEvent(new SoopyContentChangeEvent().setHandler((val, prev, cancelFun) => {
             this.changed(setting, val)
         })), 0.625, 0.2, 0.05)
+        
+        this.onSettingChangeFunctions.push(() => {
+            toggle.setValue(this.currentSettings[setting] ?? defau)
+        })
 
         return [toggle, addFun(new SoopyTextElement().setText("§0" + label).setMaxTextScale(2), 0.1, 0.35)]
     }
@@ -658,6 +674,10 @@ class SettingGui {
         textBox.text.addEvent(new SoopyContentChangeEvent().setHandler((val, prev, cancelFun) => {
             this.changed(setting, val)
         }))
+
+        this.onSettingChangeFunctions.push(() => {
+            textBox.setText(this.currentSettings[setting] ?? defau)
+        })
 
         addFun(textBox, 0.55, 0.35, 0.05)
 
@@ -674,6 +694,10 @@ class SettingGui {
         textBox.text.addEvent(new SoopyContentChangeEvent().setHandler((val, prev, cancelFun) => {
             this.changed(setting, val)
         }))
+
+        this.onSettingChangeFunctions.push(() => {
+            textBox.setText(this.currentSettings[setting] ?? defau)
+        })
 
         addFun(textBox, 0.55, 0.35, 0.05)
 
@@ -715,6 +739,12 @@ class SettingGui {
         addFun(slider3, 0.6, 0.2, 0.05).setLore(["opacity"])
         addFun(numberT3, 0.8, 0.1, 0.05).setLore(["opacity"])
 
+        this.onSettingChangeFunctions.push(() => {
+            colorPicker.setRGBColor(this.currentSettings[setting][0] ?? defau[0], this.currentSettings[setting][1] ?? defau[1], this.currentSettings[setting][2] ?? defau[2])
+            slider3.setValue(this.currentSettings[setting][3] ?? defau[3])
+            numberT3.setText((this.currentSettings[setting][3] ?? defau[3]).toString())
+        })
+
         return [[], addFun(new SoopyTextElement().setText("§0" + label).setMaxTextScale(2), 0.1, 0.35)]
     }
 
@@ -750,6 +780,12 @@ class SettingGui {
 
         addFun(slider, 0.55, 0.2, 0.05)
         addFun(numberT, 0.8, 0.1, 0.05)
+
+        this.onSettingChangeFunctions.push(() => {
+            slider.setValue(this.currentSettings[setting] ?? defau).setMin(min).setMax(max)
+            numberT.setText((this.currentSettings[setting] ?? defau).toString())
+        })
+
         return [[slider, numberT], addFun(new SoopyTextElement().setText("§0" + label).setMaxTextScale(2), 0.1, 0.35)]
     }
 
