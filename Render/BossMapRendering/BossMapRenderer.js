@@ -56,6 +56,11 @@ class BossMapRenderer extends MapTab {
         renderLibs.scizzor(x + renderContext.borderWidth, y + renderContext.borderWidth, size - 2 * renderContext.borderWidth, size - renderContext.borderWidth)
 
         if (this.currentBossImage) {
+            if (renderContext.settings.spinnyMap) {
+                Renderer.translate((renderContext.settings.posX + renderContext.paddingLeft + renderContext.borderWidth + renderContext.settings.size / 2), (renderContext.settings.posY + renderContext.paddingLeft + renderContext.borderWidth + renderContext.settings.size / 2));
+                Renderer.rotate(-(Player.getYaw() + 180))
+                Renderer.translate(-(renderContext.settings.posX + renderContext.paddingLeft + renderContext.borderWidth + renderContext.settings.size / 2), -(renderContext.settings.posY + renderContext.paddingLeft + renderContext.borderWidth + renderContext.settings.size / 2));
+            }
             this.currentBossImage.image.draw(x + renderContext.borderWidth - topLeftHudLocX, y + renderContext.borderWidth - topLeftHudLocZ, this.currentBossImage.image.getTextureWidth() * textureScale, this.currentBossImage.image.getTextureHeight() * textureScale)
         }
 

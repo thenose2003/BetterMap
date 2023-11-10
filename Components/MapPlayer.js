@@ -187,14 +187,17 @@ class MapPlayer {
             h *= 1.4
         }
 
-        if (context.settings.spinnyMap) {
-            Renderer.translate((context.settings.posX + context.paddingLeft + context.borderWidth + context.settings.size / 2), (context.settings.posY + context.paddingLeft + context.borderWidth + context.settings.size / 2));
+        // Player head rotations
+        if (context.spinnyMap == false) {
+        } else if (context.spinnyMap) {
+            Renderer.translate((context.posX + context.paddingLeft + context.borderWidth + context.size / 2), (context.posY + context.paddingLeft + context.borderWidth + context.size / 2));
             Renderer.rotate(-(Player.getYaw() + 180))
-            Renderer.translate(-(context.settings.posX + context.paddingLeft + context.borderWidth + context.settings.size / 2), -(context.settings.posY + context.paddingLeft + context.borderWidth + context.settings.size / 2));
-        }
+            Renderer.translate(-(context.posX + context.paddingLeft + context.borderWidth + context.size / 2), -(context.posY + context.paddingLeft + context.borderWidth + context.size / 2));
+        } 
+
         Renderer.translate(x + w / 2, y + h / 2, 50)
 
-        // rotates the head
+
         Renderer.rotate(rotation)
 
         if (showIcons) {
@@ -266,6 +269,7 @@ class MapPlayer {
         x2 = overrideX || x2
         y2 = overrideY || y2
 
+        renderContext.spinnyMap = renderContext.settings.spinnyMap
         this.drawAt(renderContext, x2 + rx, y2 + ry, rw, rh, renderContext.showHeads === "icons" || renderContext.showHeads === 'self-icon' && this.username === Player.getName(), this.yaw.get(), renderContext.headBorder !== 'none' ? renderContext.headBorderWidth : 0)
 
         let showNametag = renderContext.playerNames === "always"
@@ -282,13 +286,38 @@ class MapPlayer {
             Renderer.retainTransforms(true)
             Tessellator.pushMatrix()
 
-            Renderer.translate(x2, y2, 101)
-            Renderer.scale(size / 150, size / 150)
-            renderLibs.drawStringCentered("&0" + this.username, 1, rh / (2 * size / 150), 1)
-            renderLibs.drawStringCentered("&0" + this.username, -1, rh / (2 * size / 150), 1)
-            renderLibs.drawStringCentered("&0" + this.username, 0, rh / (2 * size / 150) + 1, 1)
-            renderLibs.drawStringCentered("&0" + this.username, 0, rh / (2 * size / 150) - 1, 1)
-            renderLibs.drawStringCentered(this.username, 0, rh / (2 * size / 150), 1)
+            //Renderer.translate(x2, y2, 101)
+            //Renderer.scale(size / 150, size / 150)
+
+            let x = x2
+            let y = y2
+
+            if (renderContext.settings.spinnyMap) {
+                // Generate cords relitive to center of map
+                let x1 = x2 - (renderContext.settings.posX - renderContext.paddingLeft + renderContext.borderWidth + renderContext.settings.size / 2)
+                let y1 = y2 - (renderContext.settings.posY + renderContext.paddingLeft + renderContext.borderWidth + renderContext.settings.size / 2)
+
+                // Get the angle thing is currently at and the offset
+                let phi = -(Player.getYaw()) * (Math.PI / 180);
+                let theta;
+                if (x1 > 0) {
+                    theta = Math.atan(y1 / x1) + Math.PI;
+                } else {
+                    theta = Math.atan(y1 / x1);
+                }
+                let factorX = Math.cos(theta + phi)
+                let factorY = Math.sin(theta + phi)
+                let r = Math.sqrt(Math.pow(x1, 2) + Math.pow(y1, 2))
+                // Movement back into pos
+                x = r * factorX + (renderContext.settings.posX + renderContext.paddingLeft + renderContext.borderWidth + renderContext.settings.size / 2)
+                y = r * factorY + (renderContext.settings.posY + renderContext.paddingLeft + renderContext.borderWidth + renderContext.settings.size / 2)
+            }
+
+            renderLibs.drawStringCentered("&0" + this.username, x + 1, y + rh / (2 * size / 150), 1)
+            renderLibs.drawStringCentered("&0" + this.username, x - 1, y + rh / (2 * size / 150), 1)
+            renderLibs.drawStringCentered("&0" + this.username, x, y + rh / (2 * size / 150) + 1, 1)
+            renderLibs.drawStringCentered("&0" + this.username, x, y + rh / (2 * size / 150) - 1, 1)
+            renderLibs.drawStringCentered(this.username, x, y + rh / (2 * size / 150), 1)
 
             Tessellator.popMatrix()
             Renderer.retainTransforms(false)

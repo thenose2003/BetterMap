@@ -7,7 +7,7 @@ import ButtonWithArrow from "../../../guimanager/GuiElement/ButtonWithArrow";
 import SoopyKeyPressEvent from "../../../guimanager/EventListener/SoopyKeyPressEvent";
 import MapRenderer from "../../Render/MapRenderer";
 
-let renderContext = settings.settingsManager.createRenderContext({ showMap: true, currentRoomInfo: "none", hideInBoss: false, showTabs: false, scoreInfoUnderMap: "none" })
+let renderContext = settings.settingsManager.createRenderContext({ showMap: true, currentRoomInfo: "none", hideInBoss: false, showTabs: false, scoreInfoUnderMap: "none", spinnyMap: false })
 let renderContextData = settings.renderContextManager.getRenderContextData(renderContext)
 
 let mapRenderer = new MapRenderer()
@@ -139,6 +139,7 @@ class soopyGuiMapRendererThing extends SoopyGuiElement {
             renderContextData.settings.posX = Renderer.screen.getWidth() / 2 - mapSize / 2
             renderContextData.settings.posY = 2 * Renderer.screen.getHeight() / 3 - mapSize / 3
             renderContextData.settings.size = mapSize
+            //renderContextData.settings.spinnyMap = false 
 
             mapRenderer.draw(renderContextData, settings.currentDungeon, -1, -1)
         }))
