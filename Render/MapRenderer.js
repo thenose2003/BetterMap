@@ -38,8 +38,17 @@ class MapRenderer {
         // BACKROUND COLOR
         Renderer.drawRect(Renderer.color(renderContext.settings.mapBackgroundColor[0] ?? 0, renderContext.settings.mapBackgroundColor[1] ?? 0, renderContext.settings.mapBackgroundColor[2] ?? 0, renderContext.settings.mapBackgroundColor[3] ?? 150), x, y, size, size)// Background
 
+        // cut out the sections where the map is going
+        //left top right bottom in that order
+        // https://discord.com/channels/119493402902528000/688773480954855537/1143878618762719334
+        //renderLibs.scizzorFast(x, y, size, size) // Border
+        //renderLibs.scizzorFast(x, y, renderContext.borderWidth, size)
+        //renderLibs.scizzorFast(x + size - renderContext.borderWidth, y, renderContext.borderWidth, size)
+        //renderLibs.scizzorFast(x, y + size - this.borderWidth, size, this.borderWidth)
+
         // Render the map
         this.tabs[this.selectedTabIndex].draw(renderContext, dungeonMap, mouseX, mouseY)
+        //renderLibs.stopScizzor()
 
         // THIS IS THE LEFT TOP AND RIGHT BORDER IN THAT ORDER
         Renderer.drawRect(Renderer.color(renderContext.settings.mapBorderColor[0] ?? 0, renderContext.settings.mapBorderColor[1] ?? 0, renderContext.settings.mapBorderColor[2] ?? 0, renderContext.settings.mapBorderColor[3]), x, y, size, renderContext.borderWidth) // Border

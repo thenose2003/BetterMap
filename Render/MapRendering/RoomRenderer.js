@@ -303,7 +303,7 @@ class RoomRenderer {
                 }
                 if (context.tickStyle_secrets_overHead) Renderer.translate(0, 0, 100)
                 renderLibs.drawStringCenteredShadow(text, x + textScale, y - 4.5 * textScale, textScale)
-                
+
                 if (context.settings.spinnyMap) {
                     Renderer.translate((context.settings.posX + context.paddingLeft + context.borderWidth + context.settings.size / 2), (context.settings.posY + context.paddingLeft + context.borderWidth + context.settings.size / 2));
                     Renderer.rotate(-(Player.getYaw() + 180))
@@ -311,7 +311,7 @@ class RoomRenderer {
                 }
                 if (context.tickStyle_secrets_overHead) Renderer.translate(0, 0, 100)
                 renderLibs.drawStringCenteredShadow(text, x + textScale, y - 4.5 * textScale, textScale)
-                
+
                 if (context.settings.spinnyMap) {
                     Renderer.translate((context.settings.posX + context.paddingLeft + context.borderWidth + context.settings.size / 2), (context.settings.posY + context.paddingLeft + context.borderWidth + context.settings.size / 2));
                     Renderer.rotate(-(Player.getYaw() + 180))
@@ -319,7 +319,7 @@ class RoomRenderer {
                 }
                 if (context.tickStyle_secrets_overHead) Renderer.translate(0, 0, 100)
                 renderLibs.drawStringCenteredShadow(text, x + textScale, y - 4.5 * textScale, textScale)
-                
+
                 if (context.settings.spinnyMap) {
                     Renderer.translate((context.settings.posX + context.paddingLeft + context.borderWidth + context.settings.size / 2), (context.settings.posY + context.paddingLeft + context.borderWidth + context.settings.size / 2));
                     Renderer.rotate(-(Player.getYaw() + 180))
@@ -328,11 +328,26 @@ class RoomRenderer {
                 if (context.tickStyle_secrets_overHead) Renderer.translate(0, 0, 100)
                 renderLibs.drawStringCenteredShadow(text, x, y - textScale - 4.5 * textScale, textScale)
             }
-            
+
             if (context.settings.spinnyMap) {
-                Renderer.translate((context.settings.posX + context.paddingLeft + context.borderWidth + context.settings.size / 2), (context.settings.posY + context.paddingLeft + context.borderWidth + context.settings.size / 2));
-                Renderer.rotate(-(Player.getYaw() + 180))
-                Renderer.translate(-(context.settings.posX + context.paddingLeft + context.borderWidth + context.settings.size / 2), -(context.settings.posY + context.paddingLeft + context.borderWidth + context.settings.size / 2));
+                // Generate cords relitive to center of map
+                let x1 = x - (context.settings.posX - context.paddingLeft + context.borderWidth + context.settings.size / 2)
+                let y1 = y - (context.settings.posY + context.paddingLeft + context.borderWidth + context.settings.size / 2)
+
+                // Get the angle thing is currently at and the offset
+                let phi = -(Player.getYaw()) * (Math.PI / 180);
+                let theta;
+                if (x1 > 0) {
+                    theta = Math.atan(y1 / x1) + Math.PI;
+                } else {
+                    theta = Math.atan(y1 / x1);
+                }
+                let factorX = Math.cos(theta + phi)
+                let factorY = Math.sin(theta + phi)
+                let r = Math.sqrt(Math.pow(x1, 2) + Math.pow(y1, 2))
+                // Movement back into pos
+                x = r * factorX + (context.settings.posX + context.paddingLeft + context.borderWidth + context.settings.size / 2)
+                y = r * factorY + (context.settings.posY + context.paddingLeft + context.borderWidth + context.settings.size / 2)
             }
             if (context.tickStyle_secrets_overHead) Renderer.translate(0, 0, 100)
             renderLibs.drawStringCenteredShadow(textColored, x, y - 4.5 * textScale, textScale)
@@ -375,7 +390,7 @@ class RoomRenderer {
             let i = 0
             for (let line of text) {
                 let ly = y + 9 * scale * (i - text.length / 2)
-                
+
                 if (context.settings.spinnyMap) {
                     Renderer.translate((context.settings.posX + context.paddingLeft + context.borderWidth + context.settings.size / 2), (context.settings.posY + context.paddingLeft + context.borderWidth + context.settings.size / 2));
                     Renderer.rotate(-(Player.getYaw() + 180))
@@ -383,7 +398,7 @@ class RoomRenderer {
                 }
                 if (context.tickStyle_secrets_overHead) Renderer.translate(0, 0, 100)
                 renderLibs.drawStringCenteredShadow("&0" + line, x + scale, ly, scale)
-                
+
                 if (context.settings.spinnyMap) {
                     Renderer.translate((context.settings.posX + context.paddingLeft + context.borderWidth + context.settings.size / 2), (context.settings.posY + context.paddingLeft + context.borderWidth + context.settings.size / 2));
                     Renderer.rotate(-(Player.getYaw() + 180))
@@ -391,7 +406,7 @@ class RoomRenderer {
                 }
                 if (context.tickStyle_secrets_overHead) Renderer.translate(0, 0, 100)
                 renderLibs.drawStringCenteredShadow("&0" + line, x - scale, ly, scale)
-                
+
                 if (context.settings.spinnyMap) {
                     Renderer.translate((context.settings.posX + context.paddingLeft + context.borderWidth + context.settings.size / 2), (context.settings.posY + context.paddingLeft + context.borderWidth + context.settings.size / 2));
                     Renderer.rotate(-(Player.getYaw() + 180))
@@ -399,7 +414,7 @@ class RoomRenderer {
                 }
                 if (context.tickStyle_secrets_overHead) Renderer.translate(0, 0, 100)
                 renderLibs.drawStringCenteredShadow("&0" + line, x, ly + scale, scale)
-                
+
                 if (context.settings.spinnyMap) {
                     Renderer.translate((context.settings.posX + context.paddingLeft + context.borderWidth + context.settings.size / 2), (context.settings.posY + context.paddingLeft + context.borderWidth + context.settings.size / 2));
                     Renderer.rotate(-(Player.getYaw() + 180))
@@ -408,7 +423,7 @@ class RoomRenderer {
                 if (context.tickStyle_secrets_overHead) Renderer.translate(0, 0, 100)
                 renderLibs.drawStringCenteredShadow("&0" + line, x, ly - scale, scale)
 
-                
+
                 if (context.settings.spinnyMap) {
                     Renderer.translate((context.settings.posX + context.paddingLeft + context.borderWidth + context.settings.size / 2), (context.settings.posY + context.paddingLeft + context.borderWidth + context.settings.size / 2));
                     Renderer.rotate(-(Player.getYaw() + 180))
@@ -421,7 +436,7 @@ class RoomRenderer {
 
             }
         }
-        
+
         let location = [room.components[0].arrayX, room.components[0].arrayY];
         if (context.centerCheckmarks) {
             let minX = Math.min(...room.components.map(a => a.arrayX))

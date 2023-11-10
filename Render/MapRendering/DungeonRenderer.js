@@ -62,7 +62,9 @@ class DungeonRenderer extends MapTab {
                 Renderer.rotate(-(Player.getYaw() + 180))
                 Renderer.translate(-(renderContext.settings.posX + renderContext.paddingLeft + renderContext.borderWidth + renderContext.settings.size / 2), -(renderContext.settings.posY + renderContext.paddingLeft + renderContext.borderWidth + renderContext.settings.size / 2));
             }
-
+            // Move sizzor to now inclue all the map
+            renderLibs.scizzor(x + renderContext.borderWidth, y + renderContext.borderWidth, size - 2 * renderContext.borderWidth, size - renderContext.borderWidth)
+            
             renderContext.image.draw(x + renderContext.borderWidth, y + renderContext.borderWidth, size, size - renderContext.borderWidth)
 
             for (let room of dungeonMap.roomsArr) {
@@ -72,7 +74,7 @@ class DungeonRenderer extends MapTab {
             }
 
             // Render heads
-            renderLibs.scizzor(x + renderContext.borderWidth, y + renderContext.borderWidth, size - 2 * renderContext.borderWidth, size - renderContext.borderWidth)
+            //renderLibs.scizzor(x + renderContext.borderWidth, y + renderContext.borderWidth, size - 2 * renderContext.borderWidth, size - renderContext.borderWidth)
             for (let player of dungeonMap.players) {
                 if (dungeonMap.deadPlayers.has(player.username.toLowerCase())) continue
                 player.drawIcon(renderContext, dungeonMap)
