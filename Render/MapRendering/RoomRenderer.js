@@ -229,15 +229,15 @@ class RoomRenderer {
             for (let line of text) {
                 let ly = y + 9 * scale * (i - text.length / 2)
                 if (context.tickStyle_secrets_overHead) Renderer.translate(0, 0, 100)
-                renderLibs.drawStringCenteredShadow("&0" + line, x + scale, ly, scale)
+                renderLibs.drawStringCenteredShadow("&0" + line, x + textScale, ly, textScale)
 
 
                 if (context.tickStyle_secrets_overHead) Renderer.translate(0, 0, 100)
-                renderLibs.drawStringCenteredShadow("&0" + line, x - scale, ly, scale)
+                renderLibs.drawStringCenteredShadow("&0" + line, x - textScale, ly, textScale)
 
 
                 if (context.tickStyle_secrets_overHead) Renderer.translate(0, 0, 100)
-                renderLibs.drawStringCenteredShadow("&0" + line, x, ly + scale, scale)
+                renderLibs.drawStringCenteredShadow("&0" + line, x, ly + textScale, textScale)
 
 
                 if (context.tickStyle_secrets_overHead) Renderer.translate(0, 0, 100)
