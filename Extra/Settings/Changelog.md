@@ -151,3 +151,9 @@ First released version!
 + add importing and exporting settings profiles (thenose2003)
 + add spinny map for all the nons (thenose2003)
 ```
+
+@ver v1.0.18
+```diff
+! Fixed map not loading while holding a bow (Credits @Desco1)
+! Fixed some users being unable to load assets
+```	```
